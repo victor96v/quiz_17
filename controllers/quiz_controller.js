@@ -192,18 +192,19 @@ exports.randomplay = function (req, res, next) {
     // Inicializacion/Uso de la variable de sesion de la puntuación
     req.session.score = req.session.score || 0;
     // Inicializamos el array de los no contestados
-    
+    var quizArr = req.session.quizzes;
+    quizArr = quizArr || models.Quiz.findAll();
     // Creamos un método para obtener numeros enteros random en un determinado rango
     function getRandomInt(min, max) { 
         return Math.floor(Math.random() * (max - min + 1)) + min; 
     }
     // Obtenemos todos los quizzes
-    var quizzes = models.Quiz.findAll()
-    .then(function (quizzes) {
+    quizArr
+    .then(function (quizArr) {
         // Obtenemos un valor entre el numero de quizzes de la base de datos
-        var i = getRandomInt(0, quizzes.length);
+        var i = getRandomInt(0, quizArr.length);
         res.render('quizzes/randomplay', {
-            quiz: quizzes[i],
+            quiz: quizArr[i],
             answer: answer,
             score: req.session.score
         });
@@ -214,15 +215,19 @@ exports.randomplay = function (req, res, next) {
 };
 // GET /quizzes/randomcheck/:quizId
 exports.randomcheck = function (req, res, next) {
+    //var id = req.quiz.id;
     var answer = req.query.answer || "";
     req.session.score = req.session.score || 0;
     var result = answer.toLowerCase().trim() === req.quiz.answer.toLowerCase().trim();
-    if(result)
+    if(result){
         req.session.score++;
+    }
+        
     else   
         req.session.score = 0;
     res.render('quizzes/randomresult', {
         quiz: req.quiz,
+        id:req.quiz.id,
         result: result,
         score: req.session.score,
         answer: answer
