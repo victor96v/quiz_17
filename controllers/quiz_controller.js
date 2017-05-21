@@ -193,9 +193,11 @@ exports.randomplay = function (req, res, next) {
     function getRandomInt(min, max) { 
         return Math.floor(Math.random() * (max - min + 1)) + min; 
     }
-    var i = getRandomInt(0, 3);
+    models.Quiz.findAll()
+    
     models.Quiz.findAll()
     .then(function (quizzes) {
+        var i = getRandomInt(0, quizzes.length);
         res.render('quizzes/randomplay', {
             quiz: quizzes[i],
             answer: answer,
