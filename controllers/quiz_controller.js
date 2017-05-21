@@ -69,7 +69,6 @@ exports.index = function (req, res, next) {
 
 // GET /quizzes/:quizId
 exports.show = function (req, res, next) {
-
     res.render('quizzes/show', {quiz: req.quiz});
 };
 
@@ -176,6 +175,39 @@ exports.play = function (req, res, next) {
 
 // GET /quizzes/:quizId/check
 exports.check = function (req, res, next) {
+
+    var answer = req.query.answer || "";
+
+    var result = answer.toLowerCase().trim() === req.quiz.answer.toLowerCase().trim();
+
+    res.render('quizzes/result', {
+        quiz: req.quiz,
+        result: result,
+        answer: answer
+    });
+};
+
+// GET /quizzes/randomplay
+exports.randomplay = function (req, res, next) {
+    var answer = req.query.answer || '';
+    function getRandomInt(min, max) { 
+        return Math.floor(Math.random() * (max - min + 1)) + min; 
+    }
+    var i = getRandomInt(0, 3);
+    models.Quiz.findAll()
+    .then(function (quizzes) {
+        res.render('quizzes/randomplay', {
+            quiz: quizzes[i],
+            answer: answer,
+            score: 0
+        });
+    })
+    .catch(function (error) {
+        next(error);
+    });
+};
+// GET /quizzes/randomcheck/:quizId
+exports.randomcheck = function (req, res, next) {
 
     var answer = req.query.answer || "";
 
