@@ -215,9 +215,10 @@ exports.randomcheck = function (req, res, next) {
 
     var result = answer.toLowerCase().trim() === req.quiz.answer.toLowerCase().trim();
 
-    res.render('quizzes/result', {
+    res.render('quizzes/randomresult', {
         quiz: req.quiz,
         result: result,
+        score: 0,
         answer: answer
     });
 };
