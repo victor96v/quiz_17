@@ -4,6 +4,14 @@
 <div>
     Preguntas acertadas = <span id="score"><%= score %></span>
 </div>
+<!-- Recorremos las preguntas contestas -->
+<% for (var i in contestadasPlay) { %>
+<% var anteriores = contestadasPlay[i] %>
+<!-- Creamos un div para cada id -->
+<div>
+    IDs Preguntas anteriores = <span id="score"><%= anteriores %></span>
+</div>
+<% } %>
 <% var quiz = quiz; %>
 
 <form method="get" action="/quizzes/randomcheck/<%= quiz.id %>">
