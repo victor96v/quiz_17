@@ -192,7 +192,10 @@ exports.randomplay = function (req, res, next) {
     // Inicializacion/Uso de la variable de sesion de la puntuación
     req.session.score = req.session.score || 0;
     // Inicializamos el array de los contestados
-    req.session.Cont = req.session.Cont || new Array(0);
+    var arrayiniCont = new Array(0)
+    req.session.Cont = req.session.Cont || arrayiniCont; 
+    var arrayini = new Array(0);
+    
     // Creamos un método para obtener numeros enteros random en un determinado rango
     function getRandomInt(min, max) { 
         return Math.floor(Math.random() * (max - min + 1)) + min; 
@@ -201,21 +204,50 @@ exports.randomplay = function (req, res, next) {
     var quizzes = models.Quiz.findAll()
     .then(function (quizzes) {
         // Obtenemos un valor entre el numero de quizzes de la base de datos
-        var i = getRandomInt(0, quizzes.length);
+        // Inicializamos el array de los no contestados
+        for(var l in quizzes ){
+            arrayini[l]= quizzes[l].id;
+        }
+        req.session.noCont = req.session.noCont || arrayini; 
+        var rand = 0;
+        if(req.session.noCont.length === 1)
+            rand = req.session.noCont[0];
+        else
+           rand = req.session.noCont[Math.floor(Math.random() * req.session.Cont.length)];
+        
+    var myquiz = models.Quiz.findById(rand)
+    .then(function (myquiz) {
+       //var i = getRandomInt(0, req.session.noCont.length);
         res.render('quizzes/randomplay', {
-            quiz: quizzes[i],
+            quiz: myquiz,
             answer: answer,
             score: req.session.score,
-            contestadasPlay: req.session.Cont
+            contestadasPlay: req.session.Cont,
+            NocontestadasPlay: req.session.noCont
         });
     })
     .catch(function (error) {
         next(error);
     });
+        //for(var k in req.session.noCont){
+            //(req.session.Cont).find((req.session.noCont[k])) == undefined
+          //  if( req.session.noCont[k] === 1){
+           //     var x = 1;
+           // }
+            
+            //else{
+              //  req.session.noCont.splice(req.session.noCont.indexOf(req.session.noCont[k]),1);
+            //}
+        //}
+        })
+    .catch(function (error) {
+        next(error);
+    });
+    
+    
 };
 // GET /quizzes/randomcheck/:quizId
 exports.randomcheck = function (req, res, next) {
-   
     var answer = req.query.answer || "";
     req.session.score = req.session.score || 0;
     var result = answer.toLowerCase().trim() === req.quiz.answer.toLowerCase().trim();
@@ -224,12 +256,20 @@ exports.randomcheck = function (req, res, next) {
     }
     else   
         req.session.score = 0;
-    res.render('quizzes/randomresult', {
-        quiz: req.quiz,
-        id:req.quiz.id,
-        result: result,
-        score: req.session.score,
-        answer: answer,
-        contestadasResult: req.session.Cont
+    if (req.session.score === 4 ){
+        res.render('quizzes/randomnomore', {
+        score: req.session.score     
     });
+    }
+    else{
+        res.render('quizzes/randomresult', {
+            quiz: req.quiz,
+            id:req.quiz.id,
+            result: result,
+            score: req.session.score,
+            answer: answer,
+            contestadasResult: req.session.Cont,
+            NocontestadasResult: req.session.noCont  
+        });
+     }
 };
