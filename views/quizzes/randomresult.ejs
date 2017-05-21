@@ -10,24 +10,24 @@
 <% var id = id;%>
 <% var anteriores = contestadasResult[i]; %>
 <!-- Creamos un div para cada id -->
-<div>
+<!--<div>
     IDs Preguntas anteriores = <span id="score"><%= anteriores %></span>
-</div>
+</div>-->
 <% } %>
 <!-- Recorremos las preguntas contestas -->
 <% for (var j in NocontestadasResult) { %>
 <% var siguientes = NocontestadasResult[j]; %>
 <!-- Creamos un div para cada id -->
-<div>
+<!--<div>
     IDs Preguntas que quedan = <span id="score"><%= siguientes %></span>
-</div>
+</div>-->
 <% } %>
 <p>
     La respuesta <strong> <%= answer %> </strong> a la pregunta con id <%= id %> es <%= result ? 'Correcta' : 'Incorrecta' %>.
 </p>
 
 <p>
-    <% if (!result) { %>
+    <% if (!result){ %>
     Has fallado.
     <a href="/quizzes"> FIN </a>
     <% } else { %>
@@ -35,9 +35,9 @@
     <% contestadasResult.unshift(id);%>
     <% // Eliminamos la contestada de las no contestadas %>
     <% var posicionEliminada = NocontestadasResult.indexOf(id)%>
-    <div>
+    <!--<div>
     Eliminamos la pregunta con id <span id="score"><%= id %></span>, que está en la posicion <strong> <%= posicionEliminada %> </strong> del array de NO CONTESTADAS
-    </div  >
+    </div  >-->
     <% if(posicionEliminada != -1)  { %>
     <% NocontestadasResult.splice(posicionEliminada,1); %>
     <% } %>

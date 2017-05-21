@@ -196,10 +196,6 @@ exports.randomplay = function (req, res, next) {
     req.session.Cont = req.session.Cont || arrayiniCont; 
     var arrayini = new Array(0);
     
-    // Creamos un método para obtener numeros enteros random en un determinado rango
-    function getRandomInt(min, max) { 
-        return Math.floor(Math.random() * (max - min + 1)) + min; 
-    }
     // Obtenemos todos los quizzes
     var quizzes = models.Quiz.findAll()
     .then(function (quizzes) {
@@ -217,7 +213,6 @@ exports.randomplay = function (req, res, next) {
         
     var myquiz = models.Quiz.findById(rand)
     .then(function (myquiz) {
-       //var i = getRandomInt(0, req.session.noCont.length);
         res.render('quizzes/randomplay', {
             quiz: myquiz,
             answer: answer,
@@ -229,16 +224,6 @@ exports.randomplay = function (req, res, next) {
     .catch(function (error) {
         next(error);
     });
-        //for(var k in req.session.noCont){
-            //(req.session.Cont).find((req.session.noCont[k])) == undefined
-          //  if( req.session.noCont[k] === 1){
-           //     var x = 1;
-           // }
-            
-            //else{
-              //  req.session.noCont.splice(req.session.noCont.indexOf(req.session.noCont[k]),1);
-            //}
-        //}
         })
     .catch(function (error) {
         next(error);
@@ -254,12 +239,15 @@ exports.randomcheck = function (req, res, next) {
     if(result){
         req.session.score++;
     }
-    else   
+    else  {
         req.session.score = 0;
+        req.session.Cont = new Array(0);
+    }
+        
     if (req.session.score === 4 ){
         res.render('quizzes/randomnomore', {
         score: req.session.score     
-    });
+        });
     }
     else{
         res.render('quizzes/randomresult', {
@@ -271,5 +259,5 @@ exports.randomcheck = function (req, res, next) {
             contestadasResult: req.session.Cont,
             NocontestadasResult: req.session.noCont  
         });
-     }
+    }
 };

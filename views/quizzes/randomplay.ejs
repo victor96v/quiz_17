@@ -8,27 +8,27 @@
 <% for (var i in contestadasPlay) { %>
 <% var anteriores = contestadasPlay[i] %>
 <!-- Creamos un div para cada id -->
-<div>
+<!--<div>
     IDs y posición de las preguntas contestadas = <span id="score"><%= anteriores %></span> !! 
     <span id="score"><%= contestadasPlay[i] %></span>
-</div>
+</div>-->
 <% } %>
-<div>
+<!--<div>
     Has contestado <span id="score"><%= contestadasPlay.length %></span> preguntas
-</div>
+</div>-->
 <!-- Recorremos las preguntas contestas -->
 <% for (var j in NocontestadasPlay) { %>
 <% var siguientes = NocontestadasPlay[j] %>
 <!-- Creamos un div para cada id -->
-<div>
+<!--<div>
     IDs y posición de las preguntas que quedan = <span id="score"><%= siguientes %></span> !! 
     <span id="score"><%= NocontestadasPlay[j] %></span>
-</div>
+</div>-->
 <% } %>
 
-<div>
+<!--<div>
     Quedan <span id="score"><%= NocontestadasPlay.length %></span> preguntas
-</div>
+</div>-->
 <% var quiz = quiz; %>
 
 <form method="get" action="/quizzes/randomcheck/<%= quiz.id %>">
