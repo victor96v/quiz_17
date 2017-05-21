@@ -84,7 +84,6 @@ exports.new = function (req, res, next) {
 
 // POST /quizzes/create
 exports.create = function (req, res, next) {
-
     var quiz = models.Quiz.build({
         question: req.body.question,
         answer: req.body.answer
@@ -190,18 +189,23 @@ exports.check = function (req, res, next) {
 // GET /quizzes/randomplay
 exports.randomplay = function (req, res, next) {
     var answer = req.query.answer || '';
+    // Inicializacion/Uso de la variable de sesion de la puntuación
+    req.session.score = req.session.score || 0;
+    // Inicializamos el array de los no contestados
+    
+    // Creamos un método para obtener numeros enteros random en un determinado rango
     function getRandomInt(min, max) { 
         return Math.floor(Math.random() * (max - min + 1)) + min; 
     }
-    models.Quiz.findAll()
-    
-    models.Quiz.findAll()
+    // Obtenemos todos los quizzes
+    var quizzes = models.Quiz.findAll()
     .then(function (quizzes) {
+        // Obtenemos un valor entre el numero de quizzes de la base de datos
         var i = getRandomInt(0, quizzes.length);
         res.render('quizzes/randomplay', {
             quiz: quizzes[i],
             answer: answer,
-            score: 0
+            score: req.session.score
         });
     })
     .catch(function (error) {
@@ -210,15 +214,17 @@ exports.randomplay = function (req, res, next) {
 };
 // GET /quizzes/randomcheck/:quizId
 exports.randomcheck = function (req, res, next) {
-
     var answer = req.query.answer || "";
-
+    req.session.score = req.session.score || 0;
     var result = answer.toLowerCase().trim() === req.quiz.answer.toLowerCase().trim();
-
+    if(result)
+        req.session.score++;
+    else   
+        req.session.score = 0;
     res.render('quizzes/randomresult', {
         quiz: req.quiz,
         result: result,
-        score: 0,
+        score: req.session.score,
         answer: answer
     });
 };
