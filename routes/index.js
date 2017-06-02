@@ -45,7 +45,10 @@ router.get('/', function (req, res, next) {
 router.get('/author', function (req, res, next) {
     res.render('author');
 });
-
+// Pagina de ayuda
+router.get('/help', function(req, res, next) {
+    res.render('help');
+});
 
 // Autoload de rutas que usen :quizId
 router.param('quizId', quizController.load);
@@ -88,10 +91,12 @@ router.get('/users/:userId(\\d+)/quizzes', quizController.index);     // ver las
 
 
 // Definición de rutas de /quizzes
+
+module.exports = router;
 router.get('/quizzes',
-    quizController.index);
+    quizController.index); // index
 router.get('/quizzes/:quizId(\\d+)',
-    quizController.show);
+    quizController.show); // show
 router.get('/quizzes/new',
     sessionController.loginRequired,
     quizController.new);
@@ -102,10 +107,12 @@ router.get('/quizzes/:quizId(\\d+)/edit',
     sessionController.loginRequired,
     quizController.adminOrAuthorRequired,
     quizController.edit);
+
 router.put('/quizzes/:quizId(\\d+)',
     sessionController.loginRequired,
     quizController.adminOrAuthorRequired,
     quizController.update);
+
 router.delete('/quizzes/:quizId(\\d+)',
     sessionController.loginRequired,
     quizController.adminOrAuthorRequired,
@@ -113,6 +120,7 @@ router.delete('/quizzes/:quizId(\\d+)',
 
 router.get('/quizzes/:quizId(\\d+)/play',
     quizController.play);
+
 router.get('/quizzes/:quizId(\\d+)/check',
     quizController.check);
 
@@ -131,5 +139,9 @@ router.delete('/quizzes/:quizId(\\d+)/tips/:tipId(\\d+)',
     sessionController.loginRequired,
     tipController.destroy);
 
+//Rutas de la practica 52
 
-module.exports = router;
+router.get('/quizzes/randomplay',quizController.randomplay);
+router.get('/quizzes/randomcheck/:quizId(\\d+)', quizController.randomcheck);
+
+

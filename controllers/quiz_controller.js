@@ -101,7 +101,6 @@ exports.index = function (req, res, next) {
 
 // GET /quizzes/:quizId
 exports.show = function (req, res, next) {
-
     res.render('quizzes/show', {quiz: req.quiz});
 };
 
@@ -118,7 +117,9 @@ exports.new = function (req, res, next) {
 // POST /quizzes/create
 exports.create = function (req, res, next) {
 
+
     var authorId = req.session.user && req.session.user.id || 0;
+
 
     var quiz = models.Quiz.build({
         question: req.body.question,
@@ -221,4 +222,80 @@ exports.check = function (req, res, next) {
         result: result,
         answer: answer
     });
+};
+
+// GET /quizzes/randomplay
+exports.randomplay = function (req, res, next) {
+    var answer = req.query.answer || '';
+    // Inicializacion/Uso de la variable de sesion de la puntuación
+    req.session.score = req.session.score || 0;
+    // Inicializamos el array de los contestados
+    var arrayiniCont = new Array(0)
+    req.session.Cont = req.session.Cont || arrayiniCont; 
+    var arrayini = new Array(0);
+    
+    // Obtenemos todos los quizzes
+    var quizzes = models.Quiz.findAll()
+    .then(function (quizzes) {
+        // Obtenemos un valor entre el numero de quizzes de la base de datos
+        // Inicializamos el array de los no contestados
+        for(var l in quizzes ){
+            arrayini[l]= quizzes[l].id;
+        }
+        req.session.noCont = req.session.noCont || arrayini; 
+        var rand = 0;
+        if(req.session.noCont.length === 1)
+            rand = req.session.noCont[0];
+        else
+           rand = req.session.noCont[Math.floor(Math.random() * req.session.Cont.length)];
+        
+    var myquiz = models.Quiz.findById(rand)
+    .then(function (myquiz) {
+        res.render('quizzes/randomplay', {
+            quiz: myquiz,
+            answer: answer,
+            score: req.session.score,
+            contestadasPlay: req.session.Cont,
+            NocontestadasPlay: req.session.noCont
+        });
+    })
+    .catch(function (error) {
+        next(error);
+    });
+        })
+    .catch(function (error) {
+        next(error);
+    });
+    
+    
+};
+// GET /quizzes/randomcheck/:quizId
+exports.randomcheck = function (req, res, next) {
+    var answer = req.query.answer || "";
+    req.session.score = req.session.score || 0;
+    var result = answer.toLowerCase().trim() === req.quiz.answer.toLowerCase().trim();
+    if(result){
+        req.session.score++;
+    }
+    else  {
+        req.session.score = 0;
+        req.session.Cont = new Array(0);
+    }
+        
+    if (req.session.score === 4 ){
+        res.render('quizzes/randomnomore', {
+        score: req.session.score     
+        });
+    }
+    else{
+        res.render('quizzes/randomresult', {
+            quiz: req.quiz,
+            id:req.quiz.id,
+            result: result,
+            score: req.session.score,
+            answer: answer,
+            contestadasResult: req.session.Cont,
+            NocontestadasResult: req.session.noCont  
+        });
+    }
 };
