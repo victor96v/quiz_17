@@ -267,27 +267,28 @@ exports.randomcheck = function (req, res, next) {
     req.session.score = req.session.score || 0;
     var result = answer.toLowerCase().trim() === req.quiz.answer.toLowerCase().trim();
     if(result){
-        req.session.score++;
+        ++req.session.score;
+        if (req.session.score === 4 ){
+            res.render('quizzes/randomnomore', {
+                score: req.session.score     
+            });
+        }
+        else{
+            res.render('quizzes/randomresult', {
+                quiz: req.quiz,
+                id:req.quiz.id,
+                result: result,
+                score: req.session.score,
+                answer: answer,
+                contestadasResult: req.session.Cont,
+                NocontestadasResult: req.session.noCont  
+            });
+        }
     }
     else  {
         req.session.score = 0;
         req.session.Cont = new Array(0);
     }
         
-    if (req.session.score === 4 ){
-        res.render('quizzes/randomnomore', {
-        score: req.session.score     
-        });
-    }
-    else{
-        res.render('quizzes/randomresult', {
-            quiz: req.quiz,
-            id:req.quiz.id,
-            result: result,
-            score: req.session.score,
-            answer: answer,
-            contestadasResult: req.session.Cont,
-            NocontestadasResult: req.session.noCont  
-        });
-    }
+    
 };
