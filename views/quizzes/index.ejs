@@ -20,12 +20,12 @@
         <td colspan="2">
             <small> (by <%= quiz.Author ? quiz.Author.username : "Anómino" %>) </small>
         </td>
-
+        <td>
+            <a href="/quizzes/<%= quiz.id %>"><button>ver</button></a>
+        </td>
         <% if (session.user) { %>
             <% if (session.user.isAdmin || session.user.id === quiz.AuthorId) { %>
-                <td>
-                    <a href="/quizzes/<%= quiz.id %>"><button>ver</button></a>
-                </td>
+               
                 <td>
                     <a href="/quizzes/<%= quiz.id %>/edit"><button>editar</button></a>
                 </td>

@@ -117,7 +117,6 @@ exports.new = function (req, res, next) {
 // POST /quizzes/create
 exports.create = function (req, res, next) {
 
-
     var authorId = req.session.user && req.session.user.id || 0;
 
 
@@ -161,7 +160,6 @@ exports.update = function (req, res, next) {
 
     req.quiz.question = req.body.question;
     req.quiz.answer = req.body.answer;
-
     req.quiz.save({fields: ["question", "answer"]})
     .then(function (quiz) {
         req.flash('success', 'Quiz editado con éxito.');
@@ -182,7 +180,6 @@ exports.update = function (req, res, next) {
     });
 };
 
-
 // DELETE /quizzes/:quizId
 exports.destroy = function (req, res, next) {
 
@@ -197,18 +194,14 @@ exports.destroy = function (req, res, next) {
     });
 };
 
-
 // GET /quizzes/:quizId/play
 exports.play = function (req, res, next) {
-
     var answer = req.query.answer || '';
-
     res.render('quizzes/play', {
         quiz: req.quiz,
         answer: answer
     });
 };
-
 
 // GET /quizzes/:quizId/check
 exports.check = function (req, res, next) {
@@ -232,8 +225,7 @@ exports.randomplay = function (req, res, next) {
     // Inicializamos el array de los contestados
     var arrayiniCont = new Array(0)
     req.session.Cont = req.session.Cont || arrayiniCont; 
-    var arrayini = new Array(0);
-    
+    var arrayini = new Array(0);    
     // Obtenemos todos los quizzes
     var quizzes = models.Quiz.findAll()
     .then(function (quizzes) {
