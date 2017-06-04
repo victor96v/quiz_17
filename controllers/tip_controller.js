@@ -15,7 +15,7 @@ exports.load = function (req, res, next, tipId) {
             req.tip = tip;
             next();
         } else {
-            next(new Error('No existe tipId=' + tipId));
+            next( Error('No existe tipId=' + tipId));
         }
     })
     .catch(function (error) {
@@ -41,15 +41,17 @@ exports.new = function (req, res, next) {
 // POST /quizzes/:quizId/tips
 exports.create = function (req, res, next) {
     var authorTip = req.session.user && req.session.user.username || "";
+     
     
     var tip = models.Tip.build(
         {
             text: req.body.text,
+            accepted: false,
             QuizId: req.quiz.id,
             AuthorTip: authorTip
         });
 
-    tip.save({fields: ["text","QuizId","AuthorTip"]})
+    tip.save({fields: ["text","accepted","QuizId","AuthorTip"]})
     .then(function (tip) {
         req.flash('success', 'Pista creado con éxito.');
 
